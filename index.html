@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduHub - Masofaviy Ta'lim</title>
+    <title>EduHub - Mavzu Tafsilotlari</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase Kutubxonasi -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = { darkMode: 'class' }
     </script>
@@ -46,19 +44,19 @@
             <p id="sub-title" class="text-slate-500">O'rganishni boshlash uchun quyidagi mavzulardan birini tanlang.</p>
         </header>
         <div id="topics-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Yuklanish indikatori -->
-            <p class="text-center col-span-full">Mavzular yuklanmoqda...</p>
+            <!-- Mavzular JS orqali chiqadi -->
         </div>
     </div>
 
-    <!-- 3. TOPIC DETAIL VIEW -->
+    <!-- 3. TOPIC DETAIL VIEW (HIDDEN BY DEFAULT) -->
     <div id="topic-detail" class="hidden container mx-auto px-4 py-10 max-w-4xl">
+        <!-- Topic Header -->
         <div class="flex items-start space-x-6 mb-10">
             <div class="bg-emerald-100 dark:bg-emerald-900/30 p-5 rounded-2xl text-emerald-500 text-4xl">
                 <i class="fa-solid fa-book-open"></i>
             </div>
             <div>
-                <h1 id="det-title" class="text-3xl font-bold" data-topic-id="">Mavzu yuklanmoqda...</h1>
+                <h1 id="det-title" class="text-3xl font-bold">Mavzu 1</h1>
                 <p id="det-subtitle" class="text-slate-500 mt-1">Mavzuga oid to'liq ma'lumotlar va o'quv materiallari</p>
             </div>
         </div>
@@ -69,8 +67,21 @@
                 <i class="fa-solid fa-file-lines"></i>
                 <span id="txt-overview">Umumiy ma'lumot</span>
             </div>
-            <div id="topic-description" class="text-slate-600 dark:text-slate-300 leading-relaxed">
-                Ma'lumot mavjud emas.
+            <div class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-10 flex flex-col items-center text-center">
+                <i class="fa-solid fa-file-signature text-4xl text-slate-300 mb-4"></i>
+                <p class="text-slate-500" id="txt-overview-placeholder">Bu yerda mavzu bo'yicha qisqacha tushuntirish matni bo'ladi.</p>
+            </div>
+        </div>
+
+        <!-- Section: Learning Objectives -->
+        <div class="bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900/30 rounded-[2rem] p-8 mb-6 shadow-sm">
+            <div class="flex items-center space-x-3 mb-6 text-emerald-600 dark:text-emerald-400 font-bold">
+                <i class="fa-solid fa-bullseye"></i>
+                <span id="txt-objectives">O'rganish maqsadlari</span>
+            </div>
+            <div class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-10 flex flex-col items-center text-center">
+                <i class="fa-solid fa-list-check text-4xl text-slate-300 mb-4"></i>
+                <p class="text-slate-500" id="txt-obj-placeholder">O'quvchi ushbu darsdan so'ng nimalarni bilishi kerakligi haqida ma'lumot.</p>
             </div>
         </div>
 
@@ -80,8 +91,22 @@
                 <i class="fa-solid fa-layer-group"></i>
                 <span id="txt-content">Dars materiallari</span>
             </div>
-            <div id="material-list" class="space-y-4">
-                <!-- Fayllar JS orqali keladi -->
+            <div class="space-y-4">
+                <!-- Video/File item namuna -->
+                <div class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-6 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <i class="fa-solid fa-video text-2xl text-slate-400"></i>
+                        <span class="text-slate-600 dark:text-slate-400">Dars videosi (Video)</span>
+                    </div>
+                    <button class="bg-emerald-500 text-white px-4 py-1 rounded-lg text-sm">Ko'rish</button>
+                </div>
+                <div class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-6 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <i class="fa-solid fa-file-word text-2xl text-slate-400"></i>
+                        <span class="text-slate-600 dark:text-slate-400">Amaliy topshiriq (Word)</span>
+                    </div>
+                    <button class="bg-emerald-500 text-white px-4 py-1 rounded-lg text-sm">Yuklash</button>
+                </div>
             </div>
         </div>
 
@@ -91,137 +116,56 @@
                 <i class="fa-solid fa-upload mr-2"></i> Vazifa yuborish
             </h3>
             <div class="flex flex-col items-center border-2 border-dashed border-emerald-300 p-6 rounded-2xl bg-white dark:bg-slate-800">
-                <input type="file" id="homework-file" class="hidden" accept=".pdf,image/*">
+                <input type="file" id="homework-file" class="hidden">
                 <label for="homework-file" class="cursor-pointer text-center">
                     <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-500 mb-2"></i>
-                    <p id="file-name-display" class="text-slate-600 dark:text-slate-400">Faylni tanlang (PDF yoki Rasm)</p>
+                    <p class="text-slate-600 dark:text-slate-400">Faylni tanlang (PDF yoki Rasm)</p>
                 </label>
             </div>
-            <button onclick="uploadHomework()" id="submit-btn" class="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition">YUBORISH</button>
-            
+            <button class="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition">YUBORISH</button>
             <div class="mt-4 p-3 bg-white dark:bg-slate-800 rounded-lg border border-emerald-200 text-center">
-                <span class="text-slate-500 text-sm">Sizning ballingiz: </span>
-                <span id="grade-display" class="font-bold text-emerald-600">Hali topshirilmagan</span>
+                <span class="text-slate-500 text-sm">Baho: </span>
+                <span class="font-bold text-emerald-600">Hali baholanmagan</span>
             </div>
         </div>
     </div>
 
     <script>
-        // --- SUPABASE KONFIGURATSIYASI ---
-        const SB_URL = "YOUR_SUPABASE_URL"; 
-        const SB_KEY = "YOUR_SUPABASE_ANON_KEY";
-        const supabase = supabase.createClient(SB_URL, SB_KEY);
+        const translations = {
+            uz: {
+                back: "Orqaga qaytish", overview: "Umumiy ma'lumot", objectives: "O'rganish maqsadlari",
+                content: "Dars materiallari", placeholder: "Ma'lumot mavjud emas", topic: "mavzu"
+            },
+            ru: {
+                back: "Назад к темам", overview: "Обзор", objectives: "Цели обучения",
+                content: "Материалы курса", placeholder: "Информация скоро появится", topic: "тема"
+            },
+            en: {
+                back: "Back to Topics", overview: "Overview", objectives: "Learning Objectives",
+                content: "Course Content", placeholder: "Content will be added soon", topic: "topic"
+            }
+        };
 
-        // --- MAVZULARNI BAZADAN OLISH ---
-        async function renderGrid() {
-            const { data: topics, error } = await supabase.from('topics').select('*').order('id');
+        function renderGrid() {
             const grid = document.getElementById('topics-grid');
-            
-            if (error) { grid.innerHTML = "Xatolik yuz berdi"; return; }
-            
             grid.innerHTML = "";
-            topics.forEach(topic => {
+            for (let i = 1; i <= 20; i++) {
                 grid.innerHTML += `
-                    <div onclick="openTopic(${topic.id})" class="bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 hover:shadow-xl cursor-pointer transition-all group">
+                    <div onclick="openTopic(${i})" class="bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 hover:shadow-xl cursor-pointer transition-all group">
                         <div class="text-emerald-500 text-2xl mb-4"><i class="fa-solid fa-book"></i></div>
-                        <h3 class="text-lg font-bold">${topic.title}</h3>
-                        <p class="text-emerald-500 text-sm font-bold mt-4 flex items-center uppercase">BOSHLASH <i class="fa-solid fa-chevron-right ml-2 group-hover:ml-4 transition-all text-xs"></i></p>
+                        <h3 class="text-lg font-bold">${i}-mavzu</h3>
+                        <p class="text-emerald-500 text-sm font-bold mt-4 flex items-center">BOSHLASH <i class="fa-solid fa-chevron-right ml-2 group-hover:ml-4 transition-all text-xs"></i></p>
                     </div>
                 `;
-            });
+            }
         }
 
-        // --- MAVZU TAFSILOTLARINI KO'RSATISH ---
-        async function openTopic(id) {
+        function openTopic(id) {
             document.getElementById('main-grid').classList.add('hidden');
             document.getElementById('topic-detail').classList.remove('hidden');
+            document.getElementById('det-title').innerText = "Mavzu " + id;
             window.scrollTo(0,0);
-
-            const { data: topic } = await supabase.from('topics').select('*').eq('id', id).single();
-            
-            if (topic) {
-                document.getElementById('det-title').innerText = topic.title;
-                document.getElementById('det-title').dataset.topicId = id;
-                document.getElementById('topic-description').innerText = topic.description;
-                
-                // Fayllarni chiqarish
-                const materialList = document.getElementById('material-list');
-                materialList.innerHTML = "";
-                if(topic.files) {
-                    topic.files.forEach(file => {
-                        materialList.innerHTML += `
-                            <div class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-6 flex items-center justify-between">
-                                <div class="flex items-center space-x-4">
-                                    <i class="fa-solid fa-file text-2xl text-slate-400"></i>
-                                    <span class="text-slate-600 dark:text-slate-400">${file.name}</span>
-                                </div>
-                                <a href="${file.url}" target="_blank" class="bg-emerald-500 text-white px-4 py-1 rounded-lg text-sm">Ochish</a>
-                            </div>`;
-                    });
-                }
-                checkSubmission(id); // O'quvchining balini tekshirish
-            }
         }
-
-        // --- VAZIFA YUKLASH (STUDENT) ---
-        async function uploadHomework() {
-            const fileInput = document.getElementById('homework-file');
-            const file = fileInput.files[0];
-            const topicId = document.getElementById('det-title').dataset.topicId;
-            const btn = document.getElementById('submit-btn');
-
-            if (!file) { alert("Faylni tanlang!"); return; }
-
-            btn.disabled = true;
-            btn.innerText = "Yuklanmoqda...";
-
-            // 1. Storage'ga yuklash
-            const fileName = `student_${Date.now()}_${file.name}`;
-            const { data: uploadData, error: uploadErr } = await supabase.storage
-                .from('homeworks')
-                .upload(fileName, file);
-
-            if (uploadErr) { alert("Yuklashda xato!"); btn.disabled = false; return; }
-
-            // 2. URL manzilini olish
-            const { data: urlData } = supabase.storage.from('homeworks').getPublicUrl(fileName);
-
-            // 3. Database'ga yozish
-            const { error: dbErr } = await supabase.from('submissions').insert([{
-                topic_id: topicId,
-                student_name: "O'quvchi 1", // Keyinchalik login orqali avtomatlashadi
-                file_url: urlData.publicUrl
-            }]);
-
-            if (!dbErr) {
-                alert("Vazifa muvaffaqiyatli yuborildi!");
-                btn.innerText = "YUBORILDI";
-                checkSubmission(topicId);
-            }
-        }
-
-        // --- BALNI TEKSHIRISH ---
-        async function checkSubmission(topicId) {
-            const { data } = await supabase.from('submissions')
-                .select('score')
-                .eq('topic_id', topicId)
-                .eq('student_name', "O'quvchi 1")
-                .order('id', {ascending: false})
-                .limit(1)
-                .single();
-
-            const display = document.getElementById('grade-display');
-            if (data) {
-                display.innerText = data.score !== null ? data.score + " ball" : "Topshirilgan (Tekshirilmoqda)";
-            } else {
-                display.innerText = "Hali topshirilmagan";
-            }
-        }
-
-        // Fayl tanlanganda nomini ko'rsatish
-        document.getElementById('homework-file').addEventListener('change', function(e){
-            document.getElementById('file-name-display').innerText = e.target.files[0].name;
-        });
 
         function goBack() {
             document.getElementById('main-grid').classList.remove('hidden');
@@ -230,6 +174,18 @@
 
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        }
+
+        function changeLanguage() {
+            const lang = document.getElementById('lang-select').value;
+            const t = translations[lang];
+            document.getElementById('txt-back').innerText = t.back;
+            document.getElementById('txt-overview').innerText = t.overview;
+            document.getElementById('txt-objectives').innerText = t.objectives;
+            document.getElementById('txt-content').innerText = t.content;
         }
 
         renderGrid();
