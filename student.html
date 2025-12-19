@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduHub - Masofaviy Ta'lim</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase Kutubxonasi -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white transition-colors duration-300 min-h-screen">
+
+    <!-- 1. NAVIGATION BAR -->
+    <nav class="flex justify-between items-center px-6 py-4 bg-white dark:bg-slate-800 border-b dark:border-slate-700 sticky top-0 z-50">
+        <button onclick="goBack()" id="back-btn" class="flex items-center text-emerald-500 font-medium hover:text-emerald-600">
+            <i class="fa-solid fa-arrow-left mr-2"></i> <span id="txt-back">Orqaga qaytish</span>
+        </button>
+        
+        <div class="flex items-center space-x-2">
+            <div class="bg-emerald-500 p-2 rounded-lg text-white">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight">EduHub</span>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <select id="lang-select" onchange="changeLanguage()" class="bg-transparent border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-sm outline-none">
+                <option value="uz">UZ</option>
+                <option value="ru">RU</option>
+                <option value="en">EN</option>
+            </select>
+            <button onclick="toggleDarkMode()" class="p-2 bg-slate-100 dark:bg-slate-700 rounded-full">
+                <i id="theme-icon" class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 2. MAIN CONTENT (GRID VIEW) -->
+    <div id="main-grid" class="container mx-auto px-10 py-12">
+        <header class="text-center mb-12">
+            <h1 id="main-title" class="text-4xl font-extrabold mb-4">Fan Nomi</h1>
+            <p id="sub-title" class="text-slate-500">O'rganishni boshlash uchun quyidagi mavzulardan birini tanlang.</p>
+        </header>
+        <div id="topics-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Yuklanish indikatori -->
+            <p class="text-center col-span-full">Mavzular yuklanmoqda...</p>
+        </div>
+    </div>
+
+    <!-- 3. TOPIC DETAIL VIEW -->
+    <div id="topic-detail" class="hidden container mx-auto px-4 py-10 max-w-4xl">
+        <div class="flex items-start space-x-6 mb-10">
+            <div class="bg-emerald-100 dark:bg-emerald-900/30 p-5 rounded-2xl text-emerald-500 text-4xl">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div>
+                <h1 id="det-title" class="text-3xl font-bold" data-topic-id="">Mavzu yuklanmoqda...</h1>
+                <p id="det-subtitle" class="text-slate-500 mt-1">Mavzuga oid to'liq ma'lumotlar va o'quv materiallari</p>
+            </div>
+        </div>
+
+        <!-- Section: Overview -->
+        <div class="bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900/30 rounded-[2rem] p-8 mb-6 shadow-sm">
+            <div class="flex items-center space-x-3 mb-6 text-emerald-600 dark:text-emerald-400 font-bold">
+                <i class="fa-solid fa-file-lines"></i>
+                <span id="txt-overview">Umumiy ma'lumot</span>
+            </div>
+            <div id="topic-description" class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                Ma'lumot mavjud emas.
+            </div>
+        </div>
+
+        <!-- Section: Course Content (O'qituvchi yuklagan fayllar) -->
+        <div class="bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900/30 rounded-[2rem] p-8 mb-10 shadow-sm">
+            <div class="flex items-center space-x-3 mb-6 text-emerald-600 dark:text-emerald-400 font-bold">
+                <i class="fa-solid fa-layer-group"></i>
+                <span id="txt-content">Dars materiallari</span>
+            </div>
+            <div id="material-list" class="space-y-4">
+                <!-- Fayllar JS orqali keladi -->
+            </div>
+        </div>
+
+        <!-- VAZIFA TOPSHIRISH QISMI -->
+        <div class="bg-emerald-50 dark:bg-emerald-900/10 border-2 border-emerald-500 rounded-[2rem] p-8">
+            <h3 class="text-xl font-bold mb-4 flex items-center">
+                <i class="fa-solid fa-upload mr-2"></i> Vazifa yuborish
+            </h3>
+            <div class="flex flex-col items-center border-2 border-dashed border-emerald-300 p-6 rounded-2xl bg-white dark:bg-slate-800">
+                <input type="file" id="homework-file" class="hidden" accept=".pdf,image/*">
+                <label for="homework-file" class="cursor-pointer text-center">
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-500 mb-2"></i>
+                    <p id="file-name-display" class="text-slate-600 dark:text-slate-400">Faylni tanlang (PDF yoki Rasm)</p>
+                </label>
+            </div>
+            <button onclick="uploadHomework()" id="submit-btn" class="w-full mt-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition">YUBORISH</button>
+            
+            <div class="mt-4 p-3 bg-white dark:bg-slate-800 rounded-lg border border-emerald-200 text-center">
+                <span class="text-slate-500 text-sm">Sizning ballingiz: </span>
+                <span id="grade-display" class="font-bold text-emerald-600">Hali topshirilmagan</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SUPABASE KONFIGURATSIYASI ---
+        const SB_URL = "YOUR_SUPABASE_URL"; 
+        const SB_KEY = "YOUR_SUPABASE_ANON_KEY";
+        const supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        // --- MAVZULARNI BAZADAN OLISH ---
+        async function renderGrid() {
+            const { data: topics, error } = await supabase.from('topics').select('*').order('id');
+            const grid = document.getElementById('topics-grid');
+            
+            if (error) { grid.innerHTML = "Xatolik yuz berdi"; return; }
+            
+            grid.innerHTML = "";
+            topics.forEach(topic => {
+                grid.innerHTML += `
+                    <div onclick="openTopic(${topic.id})" class="bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 hover:shadow-xl cursor-pointer transition-all group">
+                        <div class="text-emerald-500 text-2xl mb-4"><i class="fa-solid fa-book"></i></div>
+                        <h3 class="text-lg font-bold">${topic.title}</h3>
+                        <p class="text-emerald-500 text-sm font-bold mt-4 flex items-center uppercase">BOSHLASH <i class="fa-solid fa-chevron-right ml-2 group-hover:ml-4 transition-all text-xs"></i></p>
+                    </div>
+                `;
+            });
+        }
+
+        // --- MAVZU TAFSILOTLARINI KO'RSATISH ---
+        async function openTopic(id) {
+            document.getElementById('main-grid').classList.add('hidden');
+            document.getElementById('topic-detail').classList.remove('hidden');
+            window.scrollTo(0,0);
+
+            const { data: topic } = await supabase.from('topics').select('*').eq('id', id).single();
+            
+            if (topic) {
+                document.getElementById('det-title').innerText = topic.title;
+                document.getElementById('det-title').dataset.topicId = id;
+                document.getElementById('topic-description').innerText = topic.description;
+                
+                // Fayllarni chiqarish
+                const materialList = document.getElementById('material-list');
+                materialList.innerHTML = "";
+                if(topic.files) {
+                    topic.files.forEach(file => {
+                        materialList.innerHTML += `
+                            <div class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-6 flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <i class="fa-solid fa-file text-2xl text-slate-400"></i>
+                                    <span class="text-slate-600 dark:text-slate-400">${file.name}</span>
+                                </div>
+                                <a href="${file.url}" target="_blank" class="bg-emerald-500 text-white px-4 py-1 rounded-lg text-sm">Ochish</a>
+                            </div>`;
+                    });
+                }
+                checkSubmission(id); // O'quvchining balini tekshirish
+            }
+        }
+
+        // --- VAZIFA YUKLASH (STUDENT) ---
+        async function uploadHomework() {
+            const fileInput = document.getElementById('homework-file');
+            const file = fileInput.files[0];
+            const topicId = document.getElementById('det-title').dataset.topicId;
+            const btn = document.getElementById('submit-btn');
+
+            if (!file) { alert("Faylni tanlang!"); return; }
+
+            btn.disabled = true;
+            btn.innerText = "Yuklanmoqda...";
+
+            // 1. Storage'ga yuklash
+            const fileName = `student_${Date.now()}_${file.name}`;
+            const { data: uploadData, error: uploadErr } = await supabase.storage
+                .from('homeworks')
+                .upload(fileName, file);
+
+            if (uploadErr) { alert("Yuklashda xato!"); btn.disabled = false; return; }
+
+            // 2. URL manzilini olish
+            const { data: urlData } = supabase.storage.from('homeworks').getPublicUrl(fileName);
+
+            // 3. Database'ga yozish
+            const { error: dbErr } = await supabase.from('submissions').insert([{
+                topic_id: topicId,
+                student_name: "O'quvchi 1", // Keyinchalik login orqali avtomatlashadi
+                file_url: urlData.publicUrl
+            }]);
+
+            if (!dbErr) {
+                alert("Vazifa muvaffaqiyatli yuborildi!");
+                btn.innerText = "YUBORILDI";
+                checkSubmission(topicId);
+            }
+        }
+
+        // --- BALNI TEKSHIRISH ---
+        async function checkSubmission(topicId) {
+            const { data } = await supabase.from('submissions')
+                .select('score')
+                .eq('topic_id', topicId)
+                .eq('student_name', "O'quvchi 1")
+                .order('id', {ascending: false})
+                .limit(1)
+                .single();
+
+            const display = document.getElementById('grade-display');
+            if (data) {
+                display.innerText = data.score !== null ? data.score + " ball" : "Topshirilgan (Tekshirilmoqda)";
+            } else {
+                display.innerText = "Hali topshirilmagan";
+            }
+        }
+
+        // Fayl tanlanganda nomini ko'rsatish
+        document.getElementById('homework-file').addEventListener('change', function(e){
+            document.getElementById('file-name-display').innerText = e.target.files[0].name;
+        });
+
+        function goBack() {
+            document.getElementById('main-grid').classList.remove('hidden');
+            document.getElementById('topic-detail').classList.add('hidden');
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        renderGrid();
+    </script>
+</body>
+</html>
