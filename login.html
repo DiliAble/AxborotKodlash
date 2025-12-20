@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduHub - Tizimga kirish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 h-screen flex items-center justify-center px-4">
+
+    <div class="bg-white dark:bg-slate-800 p-8 rounded-[2rem] shadow-xl max-w-sm w-full">
+        <div class="text-center mb-8">
+            <div class="bg-emerald-500 w-16 h-16 rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-4">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <h1 class="text-2xl font-bold dark:text-white">EduHub-ga kirish</h1>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-600 dark:text-slate-400">Login</label>
+                <input type="text" id="username" class="w-full mt-1 p-3 rounded-xl bg-slate-50 dark:bg-slate-700 border-none outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-600 dark:text-slate-400">Parol</label>
+                <input type="password" id="password" class="w-full mt-1 p-3 rounded-xl bg-slate-50 dark:bg-slate-700 border-none outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white">
+            </div>
+            <button onclick="handleLogin()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-200 dark:shadow-none">KIRISH</button>
+        </div>
+        <p id="error-msg" class="text-red-500 text-sm mt-4 text-center hidden">Login yoki parol xato!</p>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        function handleLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const error = document.getElementById('error-msg');
+
+            if (user === "O'qituvchi" && pass === "12345") {
+                // O'qituvchi uchun loginni saqlash
+                localStorage.setItem("role", "teacher");
+                window.location.href = "oqituvchi.html";
+            } else if (user === "student" && pass === "123") {
+                // O'quvchi uchun loginni saqlash
+                localStorage.setItem("role", "student");
+                window.location.href = "index.html";
+            } else {
+                error.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
